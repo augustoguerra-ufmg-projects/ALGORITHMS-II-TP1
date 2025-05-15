@@ -2,6 +2,7 @@ import pandas as pd
 from geopy.geocoders import Nominatim
 from geopy.extra.rate_limiter import RateLimiter
 import os
+import concurrent.futures
 
 # Aplica filtro com database local com base nas keywords
 
@@ -74,11 +75,21 @@ def get_location_with_cache(address):
 latitudes = []
 longitudes = []
 
-for i, address in enumerate(dataframe["ENDERECO_COMPLETO"]):
+addresses = dataframe["ENDERECO_COMPLETO"].tolist()
+
+
+def process_address(address):
     lat, lon = get_location_with_cache(address)
+    return lat, lon
+
+
+with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
+    results = list(executor.map(process_address, addresses))
+
+for i, (lat, lon) in enumerate(results):
     latitudes.append(lat)
     longitudes.append(lon)
-    print(f"[{i + 1}/{len(dataframe)}] {address} → ({lat}, {lon})")
+    print(f"[{i + 1}/{len(addresses)}] {addresses[i]} → ({lat}, {lon})")
 
 # Append results to dataframe
 dataframe["LATITUDE"] = latitudes
