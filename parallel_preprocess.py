@@ -102,10 +102,17 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
                 columns=["address", "latitude", "longitude"],
             )
             cache_df.to_csv(cache_file, index=False)
+cache_df.to_csv(cache_file, index=False)
 
 # Append results to dataframe
-dataframe["LATITUDE"] = latitudes
-dataframe["LONGITUDE"] = longitudes
+geocoded_df = pd.DataFrame(
+    [
+        {"ENDERECO_COMPLETO": addr, "LATITUDE": lat, "LONGITUDE": lon}
+        for addr, (lat, lon) in cache.items()
+    ]
+)
+
+dataframe = dataframe.merge(geocoded_df, on="ENDERECO_COMPLETO", how="left")
 
 # Save result
 dataframe.to_csv("geocoded_output.csv", index=False)
