@@ -1,6 +1,17 @@
 import pandas as pd
 from geopy.geocoders import Nominatim
 from geopy.extra.rate_limiter import RateLimiter
+import json
+import os
+
+# 0 json para armazenar requests ja realizadas
+
+cache_path="geocache.json"
+if os.path.exists(cache_path):
+    with open(cache_path,"r",encoding="utf-8") as f:
+        geocache=json.load(f)
+else:
+    geocache={}
 
 # 1 aplica filtro com database local com base nas keywords
 
@@ -29,21 +40,31 @@ dataframe['ENDERECO_COMPLETO']=dataframe.apply(complete_address,axis=1)
 geolocator=Nominatim(user_agent="tp1_geocoder")
 geocode=RateLimiter(geolocator.geocode,min_delay_seconds=1,max_retries=2,error_wait_seconds=2, swallow_exceptions=False)
 
-for i, address in enumerate(dataframe['ENDERECO_COMPLETO']):
-    try:
-        location=geocode(address, timeout=10)
-        if location:
-            latitudes.append(location.latitude)
-            longitudes.append(location.longitude)
+try:
+    for i, address in enumerate(dataframe['ENDERECO_COMPLETO']):
+        if address in geocache:
+            lat,lon=geocache[address]
+            print(f"[{i+1}/{len(dataframe)}] Cache: {address}")
         else:
-            latitudes.append(None)
-            longitudes.append(None)
-    except Exception as e:
-        print(f"Erro linha {i}: {e}")
-        latitudes.append(None)
-        longitudes.append(None)
-    #debug
-    print(f"[{i+1}/{len(dataframe)}] {address}")
+            try:
+                location=geocode(address, timeout=10)
+                if location:
+                    lat,lon=location.latitude,location.longitude
+                else:
+                    lat,lon=None,None
+            except Exception as e:
+                print(f"Erro linha {i}: {e}")
+                lat,lon=None,None
+        
+            geocache[address]=[lat,lon]
+            #debug
+            print(f"[{i+1}/{len(dataframe)}] Request: {address}")
+            latitudes.append(lat)
+            longitudes.append(lon)
+
+finally:
+    with open(cache_path,"w",encoding="utf-8") as f:
+        json.dump(geocache,f,ensure_ascii=False,indent=2)
 
 dataframe['LATITUDE']=latitudes
 dataframe['LONGITUDE']=longitudes
