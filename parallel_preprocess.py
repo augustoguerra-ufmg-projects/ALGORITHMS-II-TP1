@@ -84,23 +84,28 @@ def process_address(address):
 
 
 with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
-    results = list(executor.map(process_address, addresses))
+    futures = {
+        executor.submit(process_address, address): i
+        for i, address in enumerate(addresses)
+    }
+    for count, future in enumerate(concurrent.futures.as_completed(futures), 1):
+        i = futures[future]
+        lat, lon = future.result()
+        latitudes.append(lat)
+        longitudes.append(lon)
+        print(f"[{count}/{len(addresses)}] {addresses[i]} → ({lat}, {lon})")
 
-for i, (lat, lon) in enumerate(results):
-    latitudes.append(lat)
-    longitudes.append(lon)
-    print(f"[{i + 1}/{len(addresses)}] {addresses[i]} → ({lat}, {lon})")
+        # Save cache every 10 results
+        if count % 10 == 0 or count == len(addresses):
+            cache_df = pd.DataFrame(
+                [(addr, lat, lon) for addr, (lat, lon) in cache.items()],
+                columns=["address", "latitude", "longitude"],
+            )
+            cache_df.to_csv(cache_file, index=False)
 
 # Append results to dataframe
 dataframe["LATITUDE"] = latitudes
 dataframe["LONGITUDE"] = longitudes
-
-# Save updated cache
-cache_df = pd.DataFrame(
-    [(addr, lat, lon) for addr, (lat, lon) in cache.items()],
-    columns=["address", "latitude", "longitude"],
-)
-cache_df.to_csv(cache_file, index=False)
 
 # Save result
 dataframe.to_csv("geocoded_output.csv", index=False)
