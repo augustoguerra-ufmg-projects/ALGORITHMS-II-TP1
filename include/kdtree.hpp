@@ -7,21 +7,23 @@
 #ifndef KDTREE_H
 #define KDTREE_H
 
-#include<bits/stdc++.h>
+#include<vector>
 #include"kdcell.hpp"
+
 using K=2;
 
 class kdtree_t
 {
 private:
-    kdcell_t* root;
-    // insert()
-    // ortogonal_search()
 
+    ptr_kdcell_t root;
+    ptr_kdcell_t insert_recursive(ptr_kdcell_t cell, ptr_kdcell_t new_cell, int depth);
+    void ortogonal_search_recursive(ptr_kdcell_t cell, const coordinates_t& lower, const coordinates_t& upper, int depth, std::vector<ptr_kdcell_t>& result);
+    
 public:
     kdtree():root(nullptr){}
-    //void insert()
-    //void search()
+    void insert(ptr_kdcell_t new_cell);
+    std::vector<ptr_kdcell_t> ortogonal_search(const coordinates_t& lower, const coordinates_t& upper);
 };
 
-#endif
+#endif // KDTREE_HPP

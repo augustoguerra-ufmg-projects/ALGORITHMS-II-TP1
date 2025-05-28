@@ -5,14 +5,17 @@
 * histórico : 20250528 arquivo criado
 */
 
-#ifndef KDTREE_H
-#define KDTREE_H
+#ifndef KDCELL_H
+#define KDCELL_H
+
+#include<string>
+#include<iostream>
 
 class coordinates_t
 {
 public:
     double x,y;
-    coordinates_t(double _x, double _y):x(_x),y(_y){}
+    coordinates_t(double _x=0.0, double _y=0.0):x(_x),y(_y){}
 };
 
 class date_t
@@ -20,20 +23,20 @@ class date_t
 public:
     unsigned int day;
     unsigned int month;
-    // string month;
+    // std::string month;
     unsigned int year;
-    date_t(unsigned int d, unsigned int m, unsigned int y):day(d),month(m),year(y){}
+    date_t(unsigned int d=1, unsigned int m=1, unsigned int y=2000):day(d),month(m),year(y){}
 };
 
 class address_t
 {
 public:
-    string street;
-    string street_type;
-    string neighborhood;
+    std::string street;
+    std::string street_type;
+    std::string neighborhood;
     unsigned int number;
-    string complement;
-    address_t(const string& st, cont string& stt, const string& neig, unsigned int n, const string & c):
+    std::string complement;
+    address_t(const std::string& st="", cont std::string& stt="", const std::string& neig=0, unsigned int n="", const std::string & c=""):
     street(st),street_type(stt),neighborhood(neig),number(n),complement(c){}
 };
 
@@ -41,14 +44,18 @@ class kdcell_t
 {
     kdcell_t* left;
     kdcell_t* right;
+    coordinates_t coordinates;
 
     /// dados que o vimogueiro pediu para manter
-    string name;
-    string fantasy_name;
+    std::string name;
+    std::string fantasy_name;
     bool permit; /// alvará
     date_t start_date;
     address_t address;
-    kdcell_t():left(nullptr),right(nullptr),permit(false){}
+    kdcell_t(const coordinates_t& c, const std::string& n, const std::string& fn, bool p, const date_t& d, const address_t& a): 
+    left(nullptr), right(nullptr), coordinates(c), name(n), fantasy_name(fn), permit(p), start_date(d), address(a) {}
 };
 
-#endif
+typedef kdcell_t* ptr_kdcell_t;
+
+#endif // KDCELL_HPP
