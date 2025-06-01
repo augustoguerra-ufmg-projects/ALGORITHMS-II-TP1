@@ -1,0 +1,38 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #DFD0B8;
+}
+
+h1 {
+    text-align: center;
+    color: #948979;
+    margin-top: 32px;
+    margin-bottom: 16px;
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    line-height: 1.2;
+    background-color: #222831;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#mapa-bh {
+    border: 2px 0px solid #948979;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgb(57, 62, 70)
+}
+
+#info-pontos {
+    margin: 20px auto;
+    padding: 10px;
+    width: 90%;
+    max-width: 800px;
+    background-color: #222831;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 948979;
+    text-align: center;
+}
