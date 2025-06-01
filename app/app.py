@@ -5,11 +5,11 @@ import pandas as pd
 
 # Carregar os dados do CSV
 try:
-    df = pd.read_csv("geocoded_output.csv")
+    df = pd.read_csv("data/geocoded_output.csv")
     # Remover linhas com valores ausentes em LATITUDE ou LONGITUDE
     df.dropna(subset=["LATITUDE", "LONGITUDE"], inplace=True)
 except FileNotFoundError:
-    print("Arquivo 'geocoded_output.csv' não encontrado. Crie um arquivo de exemplo.")
+    print("Arquivo 'data/geocoded_output.csv' não encontrado. Crie um arquivo de exemplo.")
     raise FileNotFoundError("Certifique-se de que o arquivo 'geocoded_output.csv' está no diretório correto.")
 
 # Coordenadas aproximadas do centro de Belo Horizonte e zoom inicial
