@@ -8,7 +8,6 @@ def create_map(center,zoom,bounds):
         zoom=zoom,
         bounds=bounds,
         maxBounds=bounds,
-        style={"width":"100%", "height":"90vh"},
 
         children=[
             dl.TileLayer(),

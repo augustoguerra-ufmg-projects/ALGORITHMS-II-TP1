@@ -10,9 +10,9 @@ bounds_bh=[[-20.048, -44.079], [-19.784, -43.800]]
 dataframe=load_data()
 
 app.layout=html.Div([
-    html.H1("Bares e Restaurantes de Belo Horizonte"),
+    html.H1("Bars and restaurants in Belo Horizonte"),
     create_map(center_bh,zoom_bh,bounds_bh),
-    html.Div(id="info-pontos")
+    html.Div(id="points-info")
 ])
 
 register_callbacks(app, dataframe)

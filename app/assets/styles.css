@@ -1,32 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap');
+
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Raleway', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #DFD0B8;
+    overflow: hidden;
+    background-color: #F2EFE9;
 }
+
 
 h1 {
     text-align: center;
-    color: #948979;
     margin-top: 32px;
     margin-bottom: 16px;
     font-size: 2.5rem;
     font-weight: 700;
     letter-spacing: 1px;
     line-height: 1.2;
-    background-color: #222831;
+    background-color: #2d2a26;
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-#mapa-bh {
-    border: 2px 0px solid #948979;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgb(57, 62, 70)
+#bh-map {
+    width: min(80vw, 80vh);
+    height: min(80vw, 80vh);
+    margin: 20px auto;
 }
 
-#info-pontos {
+#points-info {
     margin: 20px auto;
     padding: 10px;
     width: 90%;
