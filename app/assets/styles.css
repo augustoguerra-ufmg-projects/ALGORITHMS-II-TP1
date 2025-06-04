@@ -1,11 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Text&display=swap');
 
 body {
-    font-family: 'Raleway', sans-serif;
+    font-family: 'DM Serif Text', serif;
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #F2EFE9;
+    background-color: #f2efe8;
 }
 
 
@@ -17,10 +17,8 @@ h1 {
     font-weight: 700;
     letter-spacing: 1px;
     line-height: 1.2;
-    background-color: #2d2a26;
+    background-color: #000000;
     background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
 }
 
 #bh-map {
@@ -34,7 +32,7 @@ h1 {
     padding: 10px;
     width: 90%;
     max-width: 800px;
-    background-color: #222831;
+    background-color: #f2efe8;
     border-radius: 10px;
     box-shadow: 0 4px 8px 948979;
     text-align: center;

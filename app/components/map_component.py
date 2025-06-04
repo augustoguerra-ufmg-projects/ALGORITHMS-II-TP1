@@ -1,3 +1,9 @@
+#
+#   @brief Construcao de mapa com dash_leaflet library para plotar o mapa de Belo Horizonte
+#   autores : Augusto G.Lima, Cauã M.Pereira, Heitor G.Leite
+#   histórico : 20250601 arquivo criado
+#
+
 import dash_leaflet as dl
 from dash import html
 
@@ -10,7 +16,7 @@ def create_map(center,zoom,bounds):
         maxBounds=bounds,
 
         children=[
-            dl.TileLayer(),
+        dl.TileLayer(),
             dl.FeatureGroup([
                 dl.EditControl(
                     

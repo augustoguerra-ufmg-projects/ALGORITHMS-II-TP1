@@ -1,5 +1,7 @@
 # DCC207 - Trabalho Prático I - Geometria Computacional
 
+## Belo Horizonte Orthogonal Range Search KD-Tree
+
 Código fonte para o primeiro trabalho prático da disciplina DCC207-Algoritmos II da Universidade Federal de Minas Gerais.
 
 ## Autores
@@ -37,5 +39,5 @@ Para executar o projeto, siga os passos abaixo:
 
 3. Execute a aplicação:
     ```bash
-    python app.py
+    python index.py
     ```

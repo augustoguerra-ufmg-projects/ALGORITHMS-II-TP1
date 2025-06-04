@@ -1,3 +1,9 @@
+#
+#   @brief Realiza a busca ortogonal no mapa utilizando a KD-Tree implementada
+#   autores : Augusto G.Lima, Cauã M.Pereira, Heitor G.Leite
+#   histórico : 20250601 arquivo criado
+#
+
 from dash import Input, Output
 import dash_leaflet as dl
 from dash import html
@@ -22,6 +28,10 @@ def register_callbacks(app,dataframe):
         except (IndexError, TypeError, KeyError):
             return []
 
+        #==============================================================================
+        # TODO: Implementar a filtragem utilizando a KD-Tree
+        #
+        #==============================================================================
         filter_dataframe=dataframe[
             (dataframe["LATITUDE"]>=min_lat)&(dataframe["LATITUDE"]<=max_lat)&
             (dataframe["LONGITUDE"]>=min_lon)&(dataframe["LONGITUDE"]<=max_lon)

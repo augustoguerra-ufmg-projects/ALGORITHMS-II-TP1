@@ -1,4 +1,4 @@
-from dash import html
+from dash import Dash,html
 from app import app
 from components.map_component import create_map
 from callbacks.map_callbacks import register_callbacks
@@ -10,7 +10,7 @@ bounds_bh=[[-20.048, -44.079], [-19.784, -43.800]]
 dataframe=load_data()
 
 app.layout=html.Div([
-    html.H1("Bars and restaurants in Belo Horizonte"),
+    html.H1("Belo Horizonte Orthogonal Range Search KD-Tree"),
     create_map(center_bh,zoom_bh,bounds_bh),
     html.Div(id="points-info")
 ])
