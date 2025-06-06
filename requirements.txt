@@ -1,4 +1,5 @@
-flask
-dash
-pandas
-geopy
+flask==3.0.2
+dash==3.0.4
+pandas==2.0.3
+geopy==2.4.1
+dash-leaflet==1.1.3
