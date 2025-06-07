@@ -33,30 +33,36 @@ def register_callbacks(app, dataframe):
             if pd.notna(row["Nome"]):  # There is a match in the CSV
                 popup_content = html.Div(
                     [
-                        html.Img(src=row["Link Imagem"], style={"width": "100px"}),
-                        html.P(f"Nome: {row['Nome']}"),
-                        html.P(f"Petisco: {row['Nome Petisco']}"),
-                        html.P(f"Descrição: {row['Descricao']}"),
-                        html.A("Detalhes", href=row["Link Detalhes"], target="_blank"),
-                        html.P(f"Endereço: {row['Endereco']}"),
-                    ]
+                        html.Img(src=row["Link Imagem"], className="popup-img"),
+                        html.P(f"Nome: {row['Nome']}",  className="popup-title"),
+                        html.P(f"Petisco: {row['Nome Petisco']}", className="popup-sub"),
+                        html.P(f"Descrição: {row['Descricao']}", className="popup-desc"),
+                        html.A("Detalhes", href=row["Link Detalhes"], target="_blank", className="popup-link"),
+                        html.P(f"Endereço: {row['Endereco']}", className="popup-footer"),
+                    ],className="popup-card"
                 )
-                icon = dict(
-                    iconUrl="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png"
+                icon = dict(   
+                iconUrl="/assets/beaf.webp",
+                iconSize=[30, 41],
+                iconAnchor=[15, 41],
+                popupAnchor=[0, -41]
                 )
             else:
                 popup_content = html.Div(
-                    [
-                        html.P(f"Logradouro: {row['NOME_LOGRADOURO']}"),
-                        html.P(
-                            f"Nome Fantasia: {row['NOME_FANTASIA']}"
-                            if pd.notna(row["NOME_FANTASIA"])
-                            else "Nome Fantasia: Não disponível"
-                        ),
-                    ]
+                [
+                    html.P(f"Logradouro: {row['NOME_LOGRADOURO']}", className="popup-title"),
+                    html.P(
+                    f"Nome Fantasia: {row['NOME_FANTASIA']}" if pd.notna(row["NOME_FANTASIA"]) else "Nome Fantasia: Não disponível",
+                    className="popup-sub"
+                ),
+                ],
+                className="popup-card"
                 )
                 icon = dict(
-                    iconUrl="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png"
+                    iconUrl="/assets/rawbeaf.webp",
+                    iconSize=[30, 41],
+                    iconAnchor=[15, 41],
+                    popupAnchor=[0, -41]
                 )
 
             markers.append(
