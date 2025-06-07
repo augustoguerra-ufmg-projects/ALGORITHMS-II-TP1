@@ -50,11 +50,15 @@ def register_callbacks(app, dataframe):
             else:
                 popup_content = html.Div(
                 [
-                    html.P(f"Logradouro: {row['NOME_LOGRADOURO']}", className="popup-title"),
                     html.P(
-                    f"Nome Fantasia: {row['NOME_FANTASIA']}" if pd.notna(row["NOME_FANTASIA"]) else "Nome Fantasia: Não disponível",
-                    className="popup-sub"
-                ),
+                    f"Nome: {row['NOME']}" if pd.notna(row["NOME_FANTASIA"]) else "Nome: Não informado",
+                    className="popup-title"),
+                    html.P(
+                    f"Nome Fantasia: {row['NOME_FANTASIA']}" if pd.notna(row["NOME_FANTASIA"]) else "Nome Fantasia: Não informado",
+                    className="popup-sub"),
+                    html.P(f"Início das atividades: {row['DATA_INICIO_ATIVIDADE']}",className="popup-info"),
+                    html.P(f"Alvará: {row['IND_POSSUI_ALVARA']}", className="popup-info"),
+                    html.P(f"Endereço: {row['ENDERECO_COMPLETO']}", className="popup-footer"),
                 ],
                 className="popup-card"
                 )
@@ -70,8 +74,12 @@ def register_callbacks(app, dataframe):
                     position=(row["LATITUDE"], row["LONGITUDE"]),
                     children=[
                         dl.Tooltip(
-                            content=f"{row['NOME_FANTASIA'] if pd.notna(row['NOME_FANTASIA']) else row['NOME_LOGRADOURO']} Clique e saiba mais sobre o local!"
-                        ),
+                         html.Span(
+                             f"{row['NOME_FANTASIA'] if pd.notna(row['NOME_FANTASIA']) else row['NOME_LOGRADOURO']} Clique e saiba mais sobre o local!",
+                                    className="tooltip-text"
+                                )
+                            ),
+
                         dl.Popup(popup_content),
                     ],
                     icon=icon,

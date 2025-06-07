@@ -55,8 +55,62 @@ h3 {
 .popup-card {
     background-color: #f2efe8;
     padding: 10px;
-    max-width: 250px;
+    max-width: 360px;
+    min-width: 300px;
     font-family: 'Minecraft', monospace;
+    word-break: break-word;
+}
+
+.leaflet-popup-content-wrapper {
+    background-color: #f2efe8 !important;
+    border-radius: 0px !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    padding: 0 !important; /* remove padding interno para o wrapper */
+    width: auto !important;
+    max-width: none !important;
+}
+
+.leaflet-popup-content {
+    margin: 0 !important;
+    width: auto !important;
+    max-width: none !important;
+}
+
+.leaflet-tooltip {
+    font-family: 'Minecraft', monospace !important;
+    font-size: 14px;
+    color: yellow !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    text-shadow: 1px 1px 2px black;
+    overflow: visible;
+}
+
+/* ESTILO DO RETÂNGULO DESENHADO */
+.leaflet-interactive {
+    stroke: rgb(19, 163, 0) !important;        
+    fill: rgba(19, 163, 0, 0.466)  !important; 
+    stroke-width: 3 !important;     
+}
+.tooltip-text {
+    display: inline-block;
+    animation: pulse 0.6s infinite;
+    color: yellow;
+    font-family: 'Minecraft', monospace;
+    text-shadow: 1px 1px 2px black;
+    font-size: 14px;
+}
+
+
+@keyframes pulse {
+    0%, 100% {
+        transform: rotate(-30deg) scale(1);
+    }
+    50% {
+        transform: rotate(-30deg) scale(1.2);
+    }
 }
 
 .popup-img {
@@ -104,14 +158,8 @@ h3 {
     color: #23211d;
 }
 
-.leaflet-popup-content-wrapper {
-    background-color: #f2efe8 !important;
-    border-radius: 0px !important;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    padding: 10px;
+.popup-info {
+    font-size: 0.85rem;
+    margin: 2px 0;
+    color: #23211d;
 }
-
-.leaflet-popup-tip {
-    background-color: #f2efe8 !important;
-}
-
