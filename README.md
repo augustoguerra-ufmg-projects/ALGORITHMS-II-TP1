@@ -6,7 +6,7 @@ Código fonte para o primeiro trabalho prático da disciplina DCC207-Algoritmos 
 
 ## Autores
 
-Augusto Guerra de Lima 
+Augusto Guerra de Lima
 augustoguerra@dcc.ufmg.br
 
 Cauã Magalhaẽs Pereira
@@ -25,19 +25,21 @@ A priori, este é um trabalho de Algoritmos para geometria computacional. Árvor
 Em particular, nos dados geográficos, as coordenadas x,y implicam em uma árvore bidimensional; De forma que se, no nível l é utilizada a coordenada x para o particionamento, em l+1 tão somente, será utilizada a coordenada y.
 
 ## Como executar
+
 Para executar o projeto, siga os passos abaixo:
 
 1. Instale as dependências necessárias:
-    ```bash
-    pip install -r requirements.txt
-    ```
 
+   ```bash
+   pip install -r requirements.txt
+   ```
 2. Acesse o diretório do aplicativo:
-    ```bash
-    cd app
-    ```
 
+   ```bash
+   cd app
+   ```
 3. Execute a aplicação:
-    ```bash
-    python index.py
-    ```
+
+   ```bash
+   python wsgi.py
+   ```
