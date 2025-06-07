@@ -7,7 +7,10 @@ bounds_bh = [[-20.048, -44.079], [-19.784, -43.800]]
 
 layout = html.Div(
     [
-        html.H1("Belo Horizonte Orthogonal Range Search KD-Tree"),
+        html.H1("k-dEats"),
+        html.H3(
+            "An interactive tool for Orthogonal Range Search in Belo Horizonte using KD-Tree",
+        ),
         create_map(center_bh, zoom_bh, bounds_bh),
         html.Div(id="points-info"),
     ]
