@@ -6,7 +6,13 @@
 
 import pandas as pd
 
+
 def load_data(path="data/geocoded_output.csv"):
-    dataframe=pd.read_csv(path)
-    dataframe.dropna(subset=["LATITUDE","LONGITUDE"],inplace=True)
-    return dataframe
+    df = pd.read_csv(path)
+    df.dropna(subset=["LATITUDE", "LONGITUDE"], inplace=True)
+
+    comida_df = pd.read_csv("data/comida_di_buteco.csv")
+
+    merged = df.merge(comida_df, left_on="ID_ATIV_ECON_ESTABELECIMENTO", right_on="ID", how="left")
+
+    return merged
