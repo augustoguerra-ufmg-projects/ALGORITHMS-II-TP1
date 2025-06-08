@@ -1,7 +1,6 @@
-#include "kdtree.h"
-
 #include <iostream>
 #include <string>
+#include "kdtree.h"
 
 using std::cout, std::endl;
 
@@ -23,11 +22,11 @@ int main() {
 
   for (auto[p, d] : t.search({1, 1}, {3, 3}))
     cout << d << "(" << p[0] << "," << p[1] << ") ";
-  std::cout << endl;
+  cout << endl;
 
   t.insert({{2,2}, "m"});
   
   for (auto[p, d] : t.search({1, 1}, {3, 3}))
     cout << d << "(" << p[0] << "," << p[1] << ") ";
-  std::cout << endl;
+  cout << endl;
 }
