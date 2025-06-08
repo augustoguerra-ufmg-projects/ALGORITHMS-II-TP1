@@ -74,5 +74,4 @@ def update(selection):
         })
     return dlx.dicts_to_geojson(res)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+server = app.server
