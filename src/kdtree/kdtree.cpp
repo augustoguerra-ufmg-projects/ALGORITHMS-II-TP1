@@ -14,8 +14,6 @@ using Point = Tree::Point;
 using Pair = Tree::Pair;
 
 NB_MODULE(kdtree, m) {
-  m.doc() = "nanobind K-D Tree extension";
-
   nb::bind_vector<vector<Pair>>(m, "pair_vector");
 
   nb::class_<Tree>(m, "KDTree")
