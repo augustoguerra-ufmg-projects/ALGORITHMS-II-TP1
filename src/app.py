@@ -3,14 +3,14 @@ import dash_leaflet.express as dlx
 from dash import html, Dash, Input, Output
 import pandas as pd
 
-import sys
-sys.path.insert(0, "build")
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "build"))
 from kdtree import KDTree
 
 # carrega o dataframe
-geocoded = pd.read_csv("data/geocoded_output.csv")
+geocoded = pd.read_csv("../data/geocoded_output.csv")
 geocoded.dropna(subset=["LATITUDE", "LONGITUDE"], inplace=True)
-comida = pd.read_csv("data/comida_di_buteco.csv")
+comida = pd.read_csv("../data/comida_di_buteco.csv")
 df = geocoded.merge(comida, left_on="ID_ATIV_ECON_ESTABELECIMENTO", right_on="ID", how="left")
 
 # builda a kd tree
