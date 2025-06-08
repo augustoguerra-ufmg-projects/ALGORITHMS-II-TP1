@@ -1,106 +1,59 @@
 import pandas as pd
-from geopy.geocoders import Nominatim
-from geopy.extra.rate_limiter import RateLimiter
-import os
-import concurrent.futures
+import utm
 
-# Aplica filtro com database local com base nas keywords
+df = pd.read_csv("20250401_atividade_economica.csv", sep=";", encoding="utf-8")
 
 keywords = ["BAR", "RESTAURANTE"]
 
-original_database = "20250401_atividade_economica.csv"
-original_dataframe = pd.read_csv(original_database, sep=";", encoding="utf-8")
-
-filt = (
-    original_dataframe["DESCRICAO_CNAE_PRINCIPAL"]
-    .str.upper()
+mask = (
+    df["DESCRICAO_CNAE_PRINCIPAL"].str.upper()
     .str.contains("|".join(keywords), na=False)
 )
-dataframe = original_dataframe[filt]
-print("Filtrou estabelecimentos")
-print(f"Total filtrado: {len(dataframe)}")
+df = df[mask]
 
-latitudes = []
-longitudes = []
+# converte os pontos UTM para latitude/longitude
+def parse(s):
+    tokens = s.replace('(', '').replace(')', '').split()
+    x = float(tokens[1])
+    y = float(tokens[2])
+    return [x, y]
 
-def complete_address(row):
-    description = [
-        str(row.get("NUMERO_IMOVEL", "")).strip(),
-        str(row.get("NOME_BAIRRO", "")).strip(),
-        "Belo Horizonte",
-        "MG",
-        "Brasil",
-    ]
-    return ", ".join(i for i in description if i)
+coords = df["GEOMETRIA"].apply(parse).apply(pd.Series)
+lat, lon = utm.to_latlon(coords[0], coords[1], 23, northern=False)
+df["LATITUDE"] = lat
+df["LONGITUDE"] = lon
 
+# formata os endereços
+def endereco(row):
+    logradouro = row["DESC_LOGRADOURO"] + " " + row["NOME_LOGRADOURO"]
+    numero = row["NUMERO_IMOVEL"]
+    bairro = row["NOME_BAIRRO"]
+    complemento = row["COMPLEMENTO"]
+    return f"{logradouro}, {numero} {complemento} - {bairro}"
 
-dataframe["ENDERECO_COMPLETO"] = dataframe.apply(complete_address, axis=1)
+df["ENDERECO_COMPLETO"] = df.apply(endereco, axis=1)
 
-geolocator = Nominatim(user_agent="tp1_geocoder")
-geocode = RateLimiter(
-    geolocator.geocode, min_delay_seconds=1, max_retries=2, error_wait_seconds=2
+# cruza os dados do comida de buteco
+df = df.merge(
+    pd.read_csv("comida_di_buteco.csv"),
+    left_on="ID_ATIV_ECON_ESTABELECIMENTO",
+    right_on="ID",
+    how="left"
 )
 
-cache_file = "cache.csv"
-if os.path.exists(cache_file):
-    cache_df = pd.read_csv(cache_file)
-    cache = dict(
-        zip(cache_df["address"], zip(cache_df["latitude"], cache_df["longitude"]))
-    )
-else:
-    cache = {}
+# seleciona e renomeia colunas
+columns = {
+    "NOME_FANTASIA": "nome_fantasia",
+    "NOME": "nome",
+    "ENDERECO_COMPLETO": "endereco",
+    "DATA_INICIO_ATIVIDADE": "inicio",
+    "IND_POSSUI_ALVARA": "alvara",
+    "LATITUDE": "lat",
+    "LONGITUDE": "lon",
+    "Link Detalhes": "link",
+    "Nome Petisco": "petisco",
+    "Link Imagem": "imagem"
+}
 
-def get_location_with_cache(address):
-    if address in cache:
-        return cache[address]
-    try:
-        location = geocode(address, timeout=10)
-        if location:
-            coords = (location.latitude, location.longitude)
-        else:
-            coords = (None, None)
-    except Exception as e:
-        print(f"Erro com o endereço '{address}': {e}")
-        coords = (None, None)
-    cache[address] = coords
-    return coords
-
-
-latitudes = []
-longitudes = []
-addresses = dataframe["ENDERECO_COMPLETO"].tolist()
-
-def process_address(address):
-    lat, lon = get_location_with_cache(address)
-    return lat, lon
-
-with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
-    futures = {
-        executor.submit(process_address, address): i
-        for i, address in enumerate(addresses)
-    }
-    for count, future in enumerate(concurrent.futures.as_completed(futures), 1):
-        i = futures[future]
-        lat, lon = future.result()
-        latitudes.append(lat)
-        longitudes.append(lon)
-        print(f"[{count}/{len(addresses)}] {addresses[i]} → ({lat}, {lon})")
-
-        # Save cache every 10 results
-        if count % 10 == 0 or count == len(addresses):
-            cache_df = pd.DataFrame(
-                [(addr, lat, lon) for addr, (lat, lon) in cache.items()],
-                columns=["address", "latitude", "longitude"],
-            )
-            cache_df.to_csv(cache_file, index=False)
-cache_df.to_csv(cache_file, index=False)
-
-geocoded_df = pd.DataFrame(
-    [
-        {"ENDERECO_COMPLETO": addr, "LATITUDE": lat, "LONGITUDE": lon}
-        for addr, (lat, lon) in cache.items()
-    ]
-)
-
-dataframe = dataframe.merge(geocoded_df, on="ENDERECO_COMPLETO", how="left")
-dataframe.to_csv("geocoded_output.csv", index=False)
+df = df.rename(columns=columns)[[*columns.values()]]
+df.to_csv("data.csv", index=False)

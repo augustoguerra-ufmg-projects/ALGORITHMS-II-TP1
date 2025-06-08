@@ -7,14 +7,9 @@ import sys, os
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "build"))
 from kdtree import KDTree
 
-# carrega o dataframe
-geocoded = pd.read_csv("../data/geocoded_output.csv")
-geocoded.dropna(subset=["LATITUDE", "LONGITUDE"], inplace=True)
-comida = pd.read_csv("../data/comida_di_buteco.csv")
-df = geocoded.merge(comida, left_on="ID_ATIV_ECON_ESTABELECIMENTO", right_on="ID", how="left")
-
-# builda a kd tree
-pairs = [((row["LATITUDE"], row["LONGITUDE"]), idx) for idx, row in df.iterrows()]
+# carrega os dados e constrói a kd tree
+df = pd.read_csv("../data/data.csv")
+pairs = [((row["lat"], row["lon"]), idx) for idx, row in df.iterrows()]
 tree = KDTree(pairs)
 
 # configura o dash
@@ -68,9 +63,9 @@ def update(selection):
     for idx in points:
         data = df.loc[idx]
         res.append({
-            "lat": data["LATITUDE"],
-            "lon": data["LONGITUDE"],
-            "tooltip": data.get("NOME_FANTASIA")
+            "lat": data["lat"],
+            "lon": data["lon"],
+            "tooltip": data.get("nome_fantasia")
         })
     return dlx.dicts_to_geojson(res)
 
