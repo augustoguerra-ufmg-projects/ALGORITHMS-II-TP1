@@ -4,6 +4,8 @@
 
 Código fonte para o primeiro trabalho prático da disciplina DCC207-Algoritmos II da Universidade Federal de Minas Gerais.
 
+[Acesse o relatório](doc/relatorio.pdf).
+
 ## Autores
 
 Augusto Guerra de Lima
@@ -14,6 +16,7 @@ caua.magalhaes@dcc.ufmg.br
 
 Heitor Gonçalves Leite
 heitorleite@dcc.ufmg.br
+
 
 ## Introdução
 
@@ -30,16 +33,18 @@ Para executar o projeto, siga os passos abaixo:
 
 1. Instale as dependências necessárias:
 
-   ```bash
+   ```sh
    pip install -r requirements.txt
    ```
-2. Acesse o diretório do aplicativo:
+2. Compile o código:
 
-   ```bash
-   cd app
+   ```sh
+   cmake -S . -B build
+   cmake --build build
    ```
 3. Execute a aplicação:
 
-   ```bash
-   python wsgi.py
+   ```sh
+   python src/app.py                    # flask (debug)
+   gunicorn --chdir src wsgi:server     # gunicorn (produção)
    ```

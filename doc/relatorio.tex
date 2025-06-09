@@ -6,6 +6,10 @@
 \usepackage{tgtermes}
 \usepackage{amsfonts}
 
+\usepackage{float}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 
@@ -14,9 +18,6 @@
 \usepackage{pgfplots}
 \usetikzlibrary{positioning}
 \usetikzlibrary{arrows}
-
-
-
 
 \renewcommand{\headrulewidth}{0pt}
 
@@ -76,7 +77,9 @@ A próxima seção tratará de como foi realizada a coleta de dados, como foi im
 \subsection{Coleta e processamento de dados}
 \ 
 
-Inicialmente, os dados brutos fornecidos pela PBH foram processados para manter apenas os registros associados a bares e restaurantes. Essa filtragem foi realizada a partir de palavras-chave aplicadas à descrição da CNAE principal. Em seguida, os endereços dos estabelecimentos foram convertidos para coordenadas geográficas (latitude e longitude) utilizando a API do \textit{OpenStreetMap} com a biblioteca do \texttt{geopy}, com o auxílio de \textit{RateLimiter} para respeitar os limites de requisição. O processo utilizou cache para evitar reconsultas e paralelização com \textit{ThreadPoolExecutor} para acelerar a geocodificação dos dados.
+Inicialmente, os dados brutos fornecidos pela PBH foram processados para manter apenas os registros associados a bares e restaurantes. Essa filtragem foi realizada a partir de palavras-chave aplicadas à descrição da CNAE principal. Em seguida, os endereços dos estabelcimentos foram convertidos para coordenadas geográficas (latitude e longitude).
+
+Em um primeiro momento, para a conversão, foi utilizada a API do \textit{OpenStreetMap} com a biblioteca \texttt{geopy}, com o auxílio de \textit{RateLimiter} para respeitar os limites de requisição; O processo utilizou cache para evitar reconsultas e paralelização com \textit{ThreadPoolExecutor} para acelerar a geocodificação dos dados. Contudo, muitos dos distintos pontos foram mapeados para as mesmas coordenadas durante a conversão, então foi escolhido utilizar a biblioteca UTM do \texttt{Python} que possui função embutida que mapeia as coordenadas UTM para latitude e longitude.
 
 \subsection{Integração dos dados do Comida di Buteco}
 \ 
@@ -228,15 +231,15 @@ Como mostrado em \cite{md}, a \textit{busca intervalar ortogonal} tem uma propri
 
 A estrutura de dados foi implementada em \texttt{C++}. Para integrar com toda a aplicação em \texttt{Python}, foi necessário utilizar o \textit{nanobind}, uma pequena biblioteca de integração dessas duas linguagens de programação.
 
-A árvore k-dimensional foi escrita utilizando índices, ou seja, ela apenas armazena um apontador para onde os dados estão realmente alocados, evitando movimentação em massa dos dados.
+A árvore k-dimensional foi escrita utilizando índices, ou seja, ela apenas armazena um apontador para os \textit{id's} do \textit{dataframe} que é equivalente aos do arquivo CSV, evitando movimentação em massa dos dados.
 
 A prática de implementar estruturas de dados em \texttt{C++} para realizar a computação de forma mais eficiente e retornar os resultados para a aplicação \texttt{Python} é bastante usual.
 
-% Uso de template
+Boas práticas do uso de \texttt{<template>} e dimensão arbitrária também foram utilizadas. Por fim, para a construção da estrutura em questão com a mediana dos pontos, fora utilizado o algoritmo \textit{quickselect}, assegurando que a árvore é balanceada.
 
 % Como são escolhidos os nos
 
-\subsubsection{Complexidade}
+\subsubsection{Análise de complexidade}
 \
 
 Seja \(k\) o número de pontos encontrados em uma \textit{busca intervalar ortogonal}, a complexidade do \textit{tempo de execução} da busca pertence ao conjunto \(\mathcal{O}(\sqrt{n})\), mas reportar todas as ocorrências está em \(\mathcal{O}(\sqrt{n} + k)\).
@@ -245,15 +248,13 @@ A cada dois níveis da árvore k-dimensional, o número de nós que podem ser at
 
 \(T(n) \leq 2\) se \(n \le 4\); \(T(n) \leq 2T(\frac{n}{4}) + 1\) contrariamente.
 
-Expandindo a recorrência,
+Expandindo a relação de recorrência,
 
 \[T(n) \leq 2T(\frac{n}{4}) + 1\]
 \[ \ \leq 2(2T(\frac{n}{4^2})+ 1) + 1 \]
 \[... \leq \sum_{i=0}^{k-1}2^i + 2^k T(\frac{n}{4^k}) \ \]
 
-\[\Rightarrow T(n) \leq (2^{\log_4 n} -1 ) + 2^{\log_4 n}T(1) \leq 3 \sqrt{n}\]
-
-\[T(n) \in \mathcal{O} (\sqrt{n}).\]
+\[\Rightarrow T(n) \leq (2^{\log_4 n} -1 ) + 2^{\log_4 n}T(1) \leq 3 \sqrt{n} \in \mathcal{O}(\sqrt{n}).\]
 
 
 \subsection{Interface interativa e publicação}
@@ -265,11 +266,48 @@ A interface do sistema foi desenvolvida com a biblioteca \textit{dash-leaflet}, 
 \section{Resultados}
 \ 
 
+Ao final do trabalho desenvolvemos um sistema robusto e \textit{user-friendly}, capaz de visualizar os dados de bares e restaurantes de Belo Horizonte, cruzados com os dados do Comida di Buteco. A Figura \ref{fig:inicio} ilustra a tela inicial da aplicação \ref{fig:inicio}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/inicio}
+    \caption{Tela inicial da aplicação}
+    \label{fig:inicio}
+\end{figure}
+
+A aplicação permite selecionar um conjunto de áreas retangulares (inclusive com interseção entre elas) e realizar a busca dos pontos nessas áreas. Além disso, também é possível editar e excluir as regiões selecionadas, como mostram as Figuras \ref{fig:selecao} e \ref{fig:edicao}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/selecao.png}
+    \caption{Seleção de áreas para a busca}
+    \label{fig:selecao}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/edicao.png}
+    \caption{Edição das áreas selecionadas}
+    \label{fig:edicao}
+\end{figure}
+
+A partir de uma seleção, é possível visualizar os dados que satisfazem aquela busca, como mostra a Figura \ref{fig:dados}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/dados.png}
+    \caption{Visualização dos dados}
+    \label{fig:dados}
+\end{figure}
 
 \section{Considerações finais}
 \ 
 
+Neste trabalho, implementamos uma árvore k-dimensional para realizar buscas ortogonais em dados georreferenciados de bares e restaurantes de Belo Horizonte, integrando informações adicionais do festival Comida di Buteco.
 
+Essas estruturas fundamentais para buscas eficientes em espaços multidimensionais, sendo amplamente utilizadas em aplicações de geolocalização e visão computacional.
+
+A experiência foi interessante para explorar ferramentas novas para lidar com dados e desenvolvimento de aplicações, além de proporcionar maior contato com programação em \texttt{Python}, especialmente na integração com código em \texttt{C++}.
 
 \newpage
 \section{Bibliografia}
@@ -309,5 +347,4 @@ MOUNT, Dave. CMSC 754: \textit{Lecture} 14 \textit{- Orthogonal Range Searching 
 
 
 \end{document}
-
 
